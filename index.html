@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,23 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="manifest" href="manifest.json">
 
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -21,9 +38,11 @@
   <button id="navigate-btn" disabled>Маршрут в Google Maps</button>
 </div>
 
+<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
 
+<!-- Esri Leaflet (исправленный путь) -->
+<script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
 
 <script>
   if ("serviceWorker" in navigator) {
@@ -31,6 +50,7 @@
   }
 </script>
 
+<!-- ВАЖНО: main.js грузим ПОСЛЕ Leaflet -->
 <script src="main.js"></script>
 
 </body>
