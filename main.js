@@ -7,7 +7,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// 3. Панель
+// 3. Панель информации
 const forestNameEl = document.getElementById('forest-name');
 const navigateBtn = document.getElementById('navigate-btn');
 
@@ -26,11 +26,16 @@ fetch('data/Only_National_forests and grass_s08.json')
         fillOpacity: 0.35
       },
       onEachFeature: function(feature, layer) {
-        // Подпись на карте
-        layer.bindTooltip(feature.properties.FORESTNAME, {
-          permanent: false, // true – подпись всегда, false – при наведении
-          direction: "center",
-          className: "forest-label"
+        // Подпись при наведении
+        layer.on('mouseover', function(e) {
+          layer.bindTooltip(feature.properties.FORESTNAME, {
+            permanent: false,
+            direction: "center",
+            className: "forest-label"
+          }).openTooltip(e.latlng);
+        });
+        layer.on('mouseout', function(e) {
+          layer.closeTooltip();
         });
 
         // Клик по лесу
@@ -43,4 +48,15 @@ fetch('data/Only_National_forests and grass_s08.json')
         });
       }
     }).addTo(map);
-  });
+  })
+  .catch(err => console.error("Ошибка загрузки JSON:", err));
+
+// 5. Кнопка маршрута
+navigateBtn.addEventListener("click", function() {
+  if (!selectedLat || !selectedLon) return;
+  const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedLat},${selectedLon}`;
+  window.open(url, "_blank");
+});
+
+// 6. Геолокация пользователя
+map.locate({ setView: true, maxZoom: 8 });
