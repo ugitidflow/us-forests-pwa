@@ -14,17 +14,11 @@ const navigateBtn = document.getElementById('navigate-btn');
 let selectedLat = null;
 let selectedLon = null;
 
-// 4. Загружаем JSON с лесами
+// 4. Загружаем чистый GeoJSON
 fetch('data/Only_National_forests and grass_s08.json')
   .then(res => res.json())
   .then(data => {
-    // Проверим, что есть features
-    if (!data.features || data.features.length === 0) {
-      console.error("Файл пустой или нет features");
-      return;
-    }
-
-    const forestsLayer = L.geoJSON(data, {
+    L.geoJSON(data, {
       style: {
         color: "#0e6b0e",
         weight: 1,
@@ -32,8 +26,16 @@ fetch('data/Only_National_forests and grass_s08.json')
         fillOpacity: 0.35
       },
       onEachFeature: function(feature, layer) {
+        // Подпись на карте
+        layer.bindTooltip(feature.properties.FORESTNAME, {
+          permanent: false, // true – подпись всегда, false – при наведении
+          direction: "center",
+          className: "forest-label"
+        });
+
+        // Клик по лесу
         layer.on('click', function(e) {
-          forestNameEl.textContent = feature.properties.NAME || "Неизвестный лес";
+          forestNameEl.textContent = feature.properties.FORESTNAME;
           selectedLat = e.latlng.lat;
           selectedLon = e.latlng.lng;
           navigateBtn.disabled = false;
@@ -41,15 +43,4 @@ fetch('data/Only_National_forests and grass_s08.json')
         });
       }
     }).addTo(map);
-  })
-  .catch(err => console.error("Ошибка загрузки JSON:", err));
-
-// 5. Кнопка маршрута
-navigateBtn.addEventListener("click", function() {
-  if (!selectedLat || !selectedLon) return;
-  const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedLat},${selectedLon}`;
-  window.open(url, "_blank");
-});
-
-// 6. Геолокация пользователя
-map.locate({ setView: true, maxZoom: 8 });
+  });
