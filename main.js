@@ -15,7 +15,7 @@ let selectedLat = null;
 let selectedLon = null;
 
 // 4. Загружаем JSON с лесами
-fetch('data/Full_State_forests_s08.json')
+fetch('data/Only_National_forests and grass_s08.json')
   .then(res => res.json())
   .then(data => {
     // Проверим, что есть features
