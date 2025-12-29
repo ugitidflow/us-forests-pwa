@@ -16,12 +16,14 @@ let selectedLon = null;
 
 // 4. Слой National Forests через ArcGIS REST API USFS
 var forests = L.esri.featureLayer({
-  url: "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ForestBoundaries_01/MapServer/0",
+  url: "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ForestBoundaries_01/FeatureServer/0",
+  where: "1=1",
+  simplifyFactor: 0.5,
   style: {
     color: "#0e6b0e",
     weight: 1,
     fillColor: "#22aa22",
-    fillOpacity: 0.3
+    fillOpacity: 0.35
   }
 }).addTo(map);
 
