@@ -60,3 +60,28 @@ navigateBtn.addEventListener("click", function() {
 
 // 6. Геолокация пользователя
 map.locate({ setView: true, maxZoom: 8 });
+
+map.locate({ setView: true, maxZoom: 8 });
+
+// Событие при успешной геолокации
+map.on('locationfound', function(e) {
+  // маркер на твоём местоположении
+  const radius = e.accuracy; // точность в метрах
+  L.marker(e.latlng)
+    .addTo(map)
+    .bindPopup("Вы здесь")
+    .openPopup();
+
+  // круг точности (необязательно)
+  L.circle(e.latlng, radius, {
+    color: 'blue',
+    fillColor: '#30f',
+    fillOpacity: 0.2
+  }).addTo(map);
+});
+
+// Событие если геолокация не разрешена/не найдена
+map.on('locationerror', function(e) {
+  alert("Геолокация не доступна: " + e.message);
+});
+
