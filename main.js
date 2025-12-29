@@ -1,7 +1,7 @@
 // 1. Инициализация карты
 var map = L.map('map').setView([39, -98], 5); // центр США
 
-// 2. Подложка OSM (бесплатно)
+// 2. Подложка OSM
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '&copy; OpenStreetMap contributors'
@@ -14,35 +14,37 @@ const navigateBtn = document.getElementById('navigate-btn');
 let selectedLat = null;
 let selectedLon = null;
 
-// 4. Слой National Forests через ArcGIS REST API USFS
-var forests = L.esri.featureLayer({
-  url: "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_ForestBoundaries_01/FeatureServer/0",
-  where: "1=1",
-  simplifyFactor: 0.5,
-  style: {
-    color: "#ff0000",
-    weight: 1,
-    fillColor: "#ff0000",
-    fillOpacity: 0.35
-  }
-}).addTo(map);
+// 4. Слой National Forests из локального GeoJSON
+fetch('data/national_forests.geojson')
+  .then(res => res.json())
+  .then(data => {
+    const forestsLayer = L.geoJSON(data, {
+      style: {
+        color: "#0e6b0e",      // контур
+        weight: 1,
+        fillColor: "#22aa22",  // заливка
+        fillOpacity: 0.35
+      },
+      onEachFeature: function(feature, layer) {
+        layer.on('click', function(e) {
+          const props = feature.properties;
+          forestNameEl.textContent = props.FORESTNAME || "Неизвестный лес";
 
-// 5. Клик по лесу
-forests.on("click", function(e) {
-  const props = e.layer.feature.properties;
-  forestNameEl.textContent = props.FORESTNAME || "Неизвестный лес";
+          // координаты клика
+          selectedLat = e.latlng.lat;
+          selectedLon = e.latlng.lng;
 
-  // Берём координаты точки клика (примерно центр того, куда ты ткнул)
-  selectedLat = e.latlng.lat;
-  selectedLon = e.latlng.lng;
+          navigateBtn.disabled = false;
 
-  navigateBtn.disabled = false;
+          // плавное приближение
+          map.flyTo([selectedLat, selectedLon], 9);
+        });
+      }
+    }).addTo(map);
+  })
+  .catch(err => console.error("Ошибка загрузки GeoJSON:", err));
 
-  // Плавно приближаем карту к выбранной области
-  map.flyTo([selectedLat, selectedLon], 9);
-});
-
-// 6. Кнопка "Маршрут в Google Maps"
+// 5. Кнопка "Маршрут в Google Maps"
 navigateBtn.addEventListener("click", function() {
   if (!selectedLat || !selectedLon) return;
 
@@ -50,5 +52,5 @@ navigateBtn.addEventListener("click", function() {
   window.open(url, "_blank");
 });
 
-// 7. Геолокация пользователя (спросит разрешение)
+// 6. Геолокация пользователя
 map.locate({ setView: true, maxZoom: 8 });
