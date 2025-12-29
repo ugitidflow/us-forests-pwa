@@ -1,5 +1,5 @@
 // 1. Инициализация карты
-var map = L.map('map').setView([39, -98], 5); // центр США
+var map = L.map('map').setView([39, -98], 5);
 
 // 2. Подложка OSM
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -7,7 +7,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// 3. Панель информации
+// 3. Панель
 const forestNameEl = document.getElementById('forest-name');
 const navigateBtn = document.getElementById('navigate-btn');
 
@@ -18,20 +18,24 @@ let selectedLon = null;
 fetch('data/Full_State_forests_s08.json')
   .then(res => res.json())
   .then(data => {
+    // Проверим, что есть features
+    if (!data.features || data.features.length === 0) {
+      console.error("Файл пустой или нет features");
+      return;
+    }
+
     const forestsLayer = L.geoJSON(data, {
       style: {
-        color: "#0e6b0e",      // контур
+        color: "#0e6b0e",
         weight: 1,
-        fillColor: "#22aa22",   // заливка
+        fillColor: "#22aa22",
         fillOpacity: 0.35
       },
       onEachFeature: function(feature, layer) {
         layer.on('click', function(e) {
           forestNameEl.textContent = feature.properties.NAME || "Неизвестный лес";
-
           selectedLat = e.latlng.lat;
           selectedLon = e.latlng.lng;
-
           navigateBtn.disabled = false;
           map.flyTo([selectedLat, selectedLon], 8);
         });
