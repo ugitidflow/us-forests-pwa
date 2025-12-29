@@ -1,5 +1,5 @@
 // 1. Инициализация карты
-var map = L.map('map').setView([39, -98], 5);
+var map = L.map('map').setView([39, -98], 5); // центр США
 
 // 2. Подложка OSM
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -7,28 +7,27 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// 3. Панель
+// 3. Панель информации
 const forestNameEl = document.getElementById('forest-name');
 const navigateBtn = document.getElementById('navigate-btn');
 
 let selectedLat = null;
 let selectedLon = null;
 
-// 4. Слой National Forests через ArcGIS REST API
-fetch('https://cartowfs.nationalmap.gov/arcgis/rest/services/govunits/MapServer/24/query?where=1=1&outFields=*&f=geojson')
+// 4. Загружаем JSON с лесами
+fetch('data/Full_State_forests_s08.json')
   .then(res => res.json())
   .then(data => {
     const forestsLayer = L.geoJSON(data, {
       style: {
-        color: "#0e6b0e",
+        color: "#0e6b0e",      // контур
         weight: 1,
-        fillColor: "#22aa22",
+        fillColor: "#22aa22",   // заливка
         fillOpacity: 0.35
       },
       onEachFeature: function(feature, layer) {
         layer.on('click', function(e) {
-          const props = feature.properties;
-          forestNameEl.textContent = props.NAME || "Неизвестный лес";
+          forestNameEl.textContent = feature.properties.NAME || "Неизвестный лес";
 
           selectedLat = e.latlng.lat;
           selectedLon = e.latlng.lng;
@@ -39,7 +38,7 @@ fetch('https://cartowfs.nationalmap.gov/arcgis/rest/services/govunits/MapServer/
       }
     }).addTo(map);
   })
-  .catch(err => console.error("Ошибка загрузки GeoJSON:", err));
+  .catch(err => console.error("Ошибка загрузки JSON:", err));
 
 // 5. Кнопка маршрута
 navigateBtn.addEventListener("click", function() {
