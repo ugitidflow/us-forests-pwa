@@ -28,7 +28,7 @@ fetch('data/Only_National_forests and grass_s08.json')
       onEachFeature: function(feature, layer) {
         // Подпись на карте
         layer.bindTooltip(feature.properties.FORESTNAME, {
-          permanent: true, // true – подпись всегда, false – при наведении
+          permanent: false, // true – подпись всегда, false – при наведении
           direction: "center",
           className: "forest-label"
         });
