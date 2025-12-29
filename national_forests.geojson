@@ -1,1 +1,54 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"FORESTNAME": "Shoshone National Forest"},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-109.2, 44.2],
+            [-109.2, 44.7],
+            [-108.7, 44.7],
+            [-108.7, 44.2],
+            [-109.2, 44.2]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {"FORESTNAME": "White River National Forest"},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-106.6, 39.4],
+            [-106.6, 39.9],
+            [-106.0, 39.9],
+            [-106.0, 39.4],
+            [-106.6, 39.4]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {"FORESTNAME": "Tongass National Forest"},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-132.0, 55.0],
+            [-132.0, 56.0],
+            [-131.0, 56.0],
+            [-131.0, 55.0],
+            [-132.0, 55.0]
+          ]
+        ]
+      }
+    }
+  ]
+}
 
