@@ -1,5 +1,5 @@
 // 1. Инициализация карты
-var map = L.map('map').setView([39, -98], 5); // центр США
+var map = L.map('map').setView([39, -98], 5);
 
 // 2. Подложка OSM
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -7,47 +7,43 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// 3. Элементы панели
+// 3. Панель
 const forestNameEl = document.getElementById('forest-name');
 const navigateBtn = document.getElementById('navigate-btn');
 
 let selectedLat = null;
 let selectedLon = null;
 
-// 4. Слой National Forests из локального GeoJSON
-fetch('data/national_forests.geojson')
+// 4. Слой National Forests через ArcGIS REST API
+fetch('https://cartowfs.nationalmap.gov/arcgis/rest/services/govunits/MapServer/24/query?where=1=1&outFields=*&f=geojson')
   .then(res => res.json())
   .then(data => {
     const forestsLayer = L.geoJSON(data, {
       style: {
-        color: "#0e6b0e",      // контур
+        color: "#0e6b0e",
         weight: 1,
-        fillColor: "#22aa22",  // заливка
+        fillColor: "#22aa22",
         fillOpacity: 0.35
       },
       onEachFeature: function(feature, layer) {
         layer.on('click', function(e) {
           const props = feature.properties;
-          forestNameEl.textContent = props.FORESTNAME || "Неизвестный лес";
+          forestNameEl.textContent = props.NAME || "Неизвестный лес";
 
-          // координаты клика
           selectedLat = e.latlng.lat;
           selectedLon = e.latlng.lng;
 
           navigateBtn.disabled = false;
-
-          // плавное приближение
-          map.flyTo([selectedLat, selectedLon], 9);
+          map.flyTo([selectedLat, selectedLon], 8);
         });
       }
     }).addTo(map);
   })
   .catch(err => console.error("Ошибка загрузки GeoJSON:", err));
 
-// 5. Кнопка "Маршрут в Google Maps"
+// 5. Кнопка маршрута
 navigateBtn.addEventListener("click", function() {
   if (!selectedLat || !selectedLon) return;
-
   const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedLat},${selectedLon}`;
   window.open(url, "_blank");
 });
