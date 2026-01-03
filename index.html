@@ -1,47 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>USA National Forests Map</title>
-
-  <link rel="stylesheet" href="styles.css">
-  <link rel="manifest" href="manifest.json">
-
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
-
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-    #map {
-      height: 100%;
-      width: 100%;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-    }
-  </style>
-
-</head>
-
 <body>
 
-<div id="map"></div>
+<div id="auth-panel">
+  <h2>Доступ только для подписчиков Patreon</h2>
+  <p>Подпишитесь на нужный tier, чтобы получить доступ к карте.</p>
+  <a 
+    href="https://www.patreon.com/oauth2/authorize?
+    response_type=code
+    &client_id=ТВОЙ_CLIENT_ID
+    &redirect_uri=https://your-project.vercel.app/api/oauth-callback
+    &scope=identity.memberships"
+    id="patreon-login"
+  >
+    Войти через Patreon
+  </a>
+</div>
 
-<div id="info-panel">
+<div id="map" style="display:none;"></div>
+
+<div id="info-panel" style="display:none;">
   <h2 id="forest-name">Выберите лес</h2>
   <button id="navigate-btn" disabled>Маршрут в Google Maps</button>
 </div>
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<!-- Esri Leaflet (исправленный путь) -->
 <script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
 
 <script>
@@ -50,8 +32,6 @@
   }
 </script>
 
-<!-- ВАЖНО: main.js грузим ПОСЛЕ Leaflet -->
 <script src="main.js"></script>
 
 </body>
-</html>
